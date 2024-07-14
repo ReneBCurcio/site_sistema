@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import os
+from dotenv import load_dotenv
+import sys
+
+load_dotenv(os.path.join(BASE_DIR, ".env"))
+APPS_DIR = str(os.path.join(BASE_DIR,'apps'))
+sys.path.insert(0, APPS_DIR)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,17 +28,17 @@ STATIC_DIR=os.path.join(BASE_DIR,'static')
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-srjvgb0dr@3gb4e6*(hx)58wr_ia0nqaj$t3$5e(lrd*jn)-n5'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG")
 
 ALLOWED_HOSTS = []
 
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,6 +46,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+THIRD_APPS = [
+    ...
+]
+PROJECT_APPS = [
+    # 'apps.base',
+    # 'apps.myapp',
+]
+INSTALLED_APPS = DJANGO_APPS + THIRD_APPS + PROJECT_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -76,11 +91,17 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+  'default': {
+      'ENGINE': 'django.db.backends.sqlite3',
+      'NAME': os.path.join(BASE_DIR, os.getenv('NAME_DB')),
+			#'USER':os.getenv('USER_DB')
+			#'PASSWORD': os.getenv('PASSWORD_DB')
+			#'HOST':os.getenv('HOST_DB')
+			#'PORT':os.getenv('PORT_DB')
+
+	}
 }
+
 
 
 # Password validation
@@ -133,3 +154,12 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD') 
+EMAIL_PORT = os.getenv('EMAIL_PORT') 
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') 
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
